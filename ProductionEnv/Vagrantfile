@@ -1,73 +1,61 @@
-# Vagrantfile for multi-VM setup with two Ubuntu Focal 64 machines
-
 Vagrant.configure("2") do |config|
-  # Define the base box
   config.vm.box = "ubuntu/focal64"
 
-  # VM1 configuration
+  # Jenkins Master
   config.vm.define "master" do |vm1|
-    vm1.vm.hostname = "vm1"
+    vm1.vm.hostname = "jenkins-master"
     vm1.vm.network "public_network", ip: "192.168.0.110"
     vm1.vm.provider "virtualbox" do |vb|
-      vb.memory = "800"
+      vb.memory = "1024"
       vb.cpus = 1
     end
-      vm1.vm.provision "shell", path:"./install-jenkins.sh"
+    vm1.vm.provision "shell", path: "./install-jenkins.sh"
   end
 
-  # VM2 configuration
+  # Staging Node App (Frontend + Backend)
   config.vm.define "slave1" do |vm2|
-    vm2.vm.hostname = "vm2"
+    vm2.vm.hostname = "staging-node"
     vm2.vm.network "private_network", ip: "192.168.50.3"
     vm2.vm.provider "virtualbox" do |vb|
-      vb.memory = "1000"
-      vb.cpus = 1
+      vb.memory = "1536"
+      vb.cpus = 2
     end
-     vm2.vm.provision "shell", path:"./install-docker.sh"
-  end
-  
-  # VM3 configuration
-  config.vm.define "docker" do |vm3|
-    vm3.vm.hostname = "vm3"
-    vm3.vm.network "private_network", ip: "192.168.50.4"
-    vm3.vm.network "forwarded_port", guest:9000, host:9000
-    vm3.vm.provider "virtualbox" do |vb|
-      vb.memory = "1000"
-      vb.cpus = 4
-    end
-     vm3.vm.provision "shell", path: "./start-registry.sh"
+    vm2.vm.provision "shell", path: "./install-docker.sh"
   end
 
-    # Swarm 1 configuration
+  # Docker Swarm Manager + Registry + SonarQube
+  config.vm.define "docker" do |vm3|
+    vm3.vm.hostname = "swarm-manager"
+    vm3.vm.network "private_network", ip: "192.168.50.4"
+    vm3.vm.network "forwarded_port", guest: 9000, host: 9000  # SonarQube
+    vm3.vm.network "forwarded_port", guest: 5050, host: 5050  # Backend
+    vm3.vm.network "forwarded_port", guest: 5173, host: 5173  # Frontend
+    vm3.vm.provider "virtualbox" do |vb|
+      vb.memory = "3048"
+      vb.cpus = 2
+    end
+    vm3.vm.provision "shell", path: "./start-registry.sh"
+  end
+
+  # Swarm Worker 1
   config.vm.define "swarm1" do |vm4|
-    vm4.vm.hostname = "vm4"
+    vm4.vm.hostname = "swarm-worker-1"
     vm4.vm.network "private_network", ip: "192.168.50.5"
     vm4.vm.provider "virtualbox" do |vb|
-      vb.memory = "512"
+      vb.memory = "1024"
       vb.cpus = 1
     end
-     vm4.vm.provision "shell", path:"./install-docker.sh"
+    vm4.vm.provision "shell", path: "./install-docker.sh"
   end
 
-    # VM3 configuration
+  # Swarm Worker 2
   config.vm.define "swarm2" do |vm5|
-    vm5.vm.hostname = "vm5"
+    vm5.vm.hostname = "swarm-worker-2"
     vm5.vm.network "private_network", ip: "192.168.50.6"
     vm5.vm.provider "virtualbox" do |vb|
-      vb.memory = "512"
+      vb.memory = "1024"
       vb.cpus = 1
     end
-     vm5.vm.provision "shell", path:"./install-docker.sh"
+    vm5.vm.provision "shell", path: "./install-docker.sh"
   end
-    # VM3 configuration
-  config.vm.define "swarm3" do |vm6|
-    vm6.vm.hostname = "vm6"
-    vm6.vm.network "private_network", ip: "192.168.50.7"
-    vm6.vm.provider "virtualbox" do |vb|
-      vb.memory = "512"
-      vb.cpus = 1
-    end
-     vm6.vm.provision "shell", path:"./install-docker.sh"
-  end
-  
 end
