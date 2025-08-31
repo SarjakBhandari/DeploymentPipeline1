@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
     vm1.vm.network "public_network", ip: "192.168.0.110"
     vm1.vm.provider "virtualbox" do |vb|
       vb.memory = "850"
-      vb.cpus = 1
+      vb.cpus = 2
     end
     vm1.vm.provision "shell", path: "./install-jenkins.sh"
   end
@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
     vm2.vm.hostname = "staging-node"
     vm2.vm.network "private_network", ip: "192.168.50.3"
     vm2.vm.provider "virtualbox" do |vb|
-      vb.memory = "1200"
+      vb.memory = "1100"
       vb.cpus = 2
     end
     vm2.vm.provision "shell", path: "./install-docker.sh"
@@ -33,8 +33,8 @@ Vagrant.configure("2") do |config|
     vm3.vm.network "forwarded_port", guest: 9090, host: 9090  # prometheus
     vm3.vm.network "forwarded_port", guest: 3000, host: 3000  # grafana
     vm3.vm.provider "virtualbox" do |vb|
-      vb.memory = "3500"
-      vb.cpus = 2
+      vb.memory = "3200"
+      vb.cpus = 4
     end
     vm3.vm.provision "shell", path: "./start-registry.sh"
   end
@@ -44,7 +44,7 @@ Vagrant.configure("2") do |config|
     vm4.vm.hostname = "swarm-worker-1"
     vm4.vm.network "private_network", ip: "192.168.50.5"
     vm4.vm.provider "virtualbox" do |vb|
-      vb.memory = "800"
+      vb.memory = "1000"
       vb.cpus = 2
     end
     vm4.vm.provision "shell", path: "./install-docker.sh"
@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
     vm5.vm.hostname = "swarm-worker-2"
     vm5.vm.network "private_network", ip: "192.168.50.6"
     vm5.vm.provider "virtualbox" do |vb|
-      vb.memory = "800"
+      vb.memory = "1000"
       vb.cpus = 2
     end
     vm5.vm.provision "shell", path: "./install-docker.sh"
