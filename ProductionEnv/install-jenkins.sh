@@ -11,3 +11,18 @@ sudo apt-get install jenkins -y
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
 sudo systemctl status jenkins
+sudo apt install unzip
+
+# Download Sonar Scanner
+wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+
+# Unzip and move to /opt
+unzip sonar-scanner-cli-*.zip
+sudo mv sonar-scanner-*/ /opt/sonar-scanner
+
+# Add to PATH
+echo 'export PATH=$PATH:/opt/sonar-scanner/bin' >> ~/.bashrc
+source ~/.bashrc
+
+# Test
+sonar-scanner --version
