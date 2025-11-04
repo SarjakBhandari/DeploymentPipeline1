@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-
 echo " Removing pre-existing Docker packages..."
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
   sudo apt-get remove -y $pkg || true
@@ -37,4 +36,11 @@ else
     -v /opt/registry/data:/var/lib/registry \
     registry:2
   echo "✅ Registry container started."
+sudo apt upgrade -y
+sudo apt install openjdk-21-jdk -y
 fi
+
+
+
+
+

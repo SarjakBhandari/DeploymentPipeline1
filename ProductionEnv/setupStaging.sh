@@ -77,3 +77,5 @@ docker-compose up -d --force-recreate
 echo "SonarQube stack launched. Waiting for readiness..."
 sleep 10
 docker logs sonarqube | grep -q "SonarQube is operational" && echo " SonarQube is ready!" || echo "Still initializing..."
+sudo apt upgrade
+sudo apt install openjdk-21-jdk
