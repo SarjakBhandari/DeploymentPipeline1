@@ -19,7 +19,7 @@ echo \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-echo "🚀 Installing Docker and Compose..."
+echo " Installing Docker and Compose..."
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-compose
 
@@ -27,7 +27,7 @@ echo "Starting local Docker registry on port 5000 with persistent volume..."
 sudo mkdir -p /opt/registry/data
 
 if [ "$(docker ps -a --filter name=registry --format '{{.Names}}')" = "registry" ]; then
-  echo "🛑 Registry container already exists. Skipping creation."
+  echo " Registry container already exists. Skipping creation."
 else
   docker run -d \
     --restart=always \
@@ -35,7 +35,7 @@ else
     -p 5000:5000 \
     -v /opt/registry/data:/var/lib/registry \
     registry:2
-  echo "✅ Registry container started."
+  echo "Registry container started."
 sudo apt upgrade -y
 sudo apt install openjdk-21-jdk -y
 fi
